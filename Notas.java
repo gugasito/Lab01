@@ -1,5 +1,6 @@
 import java.util.Scanner;
-public class Notas {
+
+public class Notas{
 
     public static void main(String[] args) {
         double students[][] = new double[5][50];
@@ -22,20 +23,42 @@ public class Notas {
         int opcion = screen.nextInt();
         switch (opcion) {
             case 1:
-                agregarNota(students, posDisp(students));
+                if (revisar(students)) {
+                    agregarNota(students, posDisp(students));
+                } else {
+                    System.out.println("Registro de notas lleno");
+                }
                 menu(students);
             case 2:
-                aproveS(students);
-                mostrarAprove(students);
+                if (vacia(students)) {
+                    aproveS(students);
+                    mostrarAprove(students);
+                } else {
+                    System.out.println("Registro de notas vacio, agregue notas");
+                }
                 menu(students);
             case 3:
-                disaproveS(students);
-                mostrarDisaprove(students);
+                if (vacia(students)) {
+                    disaproveS(students);
+                    mostrarDisaprove(students);
+                } else {
+                    System.out.println("Registro de notas vacio, agregue notas");
+                }
                 menu(students);
             case 4:
+                if (vacia(students)) {
+                    examen(students);
+                    mostrarExam(students);
+                } else {
+                    System.out.println("Registro de notas vacio, agregue notas");
+                }
                 menu(students);
             case 5:
-                mostrar(students);
+                if (vacia(students)) {
+                    detalle(students);
+                } else {
+                    System.out.println("Registro de notas vacio, agregue notas");
+                }
                 menu(students);
             case 6:
                 salir(students);
@@ -67,21 +90,16 @@ public class Notas {
         }
     }
 
-    public static void mostrar(double[][] students) {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 50; j++) {
+    public static void detalle(double[][] students) {
+        for (int j = 0; j < registrados(students); j++) {
+            System.out.println("ESTUDIANTE [" + (j + 1) + "]: ");
+            System.out.println("Notas:");
+            for (int i = 0; i < 5; i++) {
                 System.out.println(students[i][j]);
             }
+            System.out.println("Promedio:");
+            System.out.println(promedio(students, j));
         }
-    }
-
-    public static boolean revisar(double[][] students) {
-        boolean llena = false;
-        if (posDisp(students) == 0) {
-            llena = true;
-            System.out.println("La matriz está llena, no se pueden agregar más");
-        }
-        return llena;
     }
 
     public static int posDisp(double[][] students) {
@@ -110,6 +128,20 @@ public class Notas {
         return count;
     }
 
+    public static int examen(double[][] students) {
+        int count = 0;
+        for (int j = 0; j < registrados(students); j++) {
+            if (promedio(students, j) >= 3.6 && promedio(students, j) < 4.0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static void mostrarExam(double[][] students) {
+        System.out.println("La cantidad de estudiantes que van a examen es: " + examen(students));
+    }
+
     public static double promedio(double[][] students, int pos) {
         double prom;
         prom = (students[0][pos] * 0.10) + (students[1][pos] * 0.25) + (students[2][pos] * 0.25) + (students[3][pos] * 0.15) + (students[4][pos] * 0.1);
@@ -132,5 +164,21 @@ public class Notas {
             }
         }
         return count;
+    }
+
+    public static boolean revisar(double[][] students) {
+        boolean llena = true;
+        if (students[0][49] != 0.0) {
+            llena = false;
+        }
+        return llena;
+    }
+
+    private static boolean vacia(double[][] students) {
+        boolean llena = true;
+        if (students[0][0] == 0.0) {
+            llena = false;
+        }
+        return llena;
     }
 }
