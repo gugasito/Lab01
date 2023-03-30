@@ -22,11 +22,15 @@ public class Notas {
         int opcion = screen.nextInt();
         switch (opcion) {
             case 1:
-                agregarNota(students, notasDisp(students));
+                agregarNota(students, posDisp(students));
                 menu(students);
             case 2:
+                aproveS(students);
+                mostrarAprove(students);
                 menu(students);
             case 3:
+                disaproveS(students);
+                mostrarDisaprove(students);
                 menu(students);
             case 4:
                 menu(students);
@@ -43,7 +47,6 @@ public class Notas {
         int pos = 50 - disp;
         for (int i = 0; i < 5; i++) {
             students[i][pos] = numGen();
-            System.out.println(students[i][pos]);
         }
     }
 
@@ -73,15 +76,15 @@ public class Notas {
     }
 
     public static boolean revisar(double[][] students) {
-        boolean vacio = false;
-        if (students[0][0] == 0) {
-            vacio = true;
-            System.out.println("La matriz está vacia, favor ingresar datos");
+        boolean llena = false;
+        if (posDisp(students) == 0) {
+            llena = true;
+            System.out.println("La matriz está llena, no se pueden agregar más");
         }
-        return vacio;
+        return llena;
     }
 
-    public static int notasDisp(double[][] students) {
+    public static int posDisp(double[][] students) {
         int cant = 0;
         for (int j = 0; j < 50; j++) {
             if (students[0][j] == 0.0) {
@@ -89,5 +92,45 @@ public class Notas {
             }
         }
         return cant;
+    }
+
+    public static int disaproveS(double[][] students) {
+        int count;
+        count = registrados(students) - aproveS(students);
+        return count;
+    }
+
+    public static int aproveS(double[][] students) {
+        int count = 0;
+        for (int j = 0; j < registrados(students); j++) {
+            if (promedio(students, j) >= 4.0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static double promedio(double[][] students, int pos) {
+        double prom;
+        prom = (students[0][pos] * 0.10) + (students[1][pos] * 0.25) + (students[2][pos] * 0.25) + (students[3][pos] * 0.15) + (students[4][pos] * 0.1);
+        return prom;
+    }
+
+    public static void mostrarAprove(double[][] students) {
+        System.out.println("La cantidad de estudiantes que aprueban es: " + aproveS(students));
+    }
+
+    public static void mostrarDisaprove(double[][] students) {
+        System.out.println("La cantidad de estudiantes que desaprueban es: " + disaproveS(students));
+    }
+
+    public static int registrados(double[][] students) {
+        int count = 0;
+        for (int i = 0; i < 50; i++) {
+            if (students[0][i] != 0.0) {
+                count++;
+            }
+        }
+        return count;
     }
 }
